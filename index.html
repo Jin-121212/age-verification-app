@@ -2,671 +2,181 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <title>Age Verification App — iPhone Prototype</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Age Verification App – Multi Page Prototype</title>
 
-  <!-- React & Babel -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Tailwind (CDN) for quick mobile styling -->
+  <!-- TailwindCSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* iPhone safe area & small visual helpers */
-    :root {
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
+    body { background:#f8fafc; font-family: Inter, sans-serif; }
+    section { 
+      background:white; 
+      border:1px solid #e2e8f0; 
+      border-radius:12px; 
+      padding:20px; 
+      margin:20px auto; 
+      max-width:420px;
     }
-    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: #f3f4f6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-    .status-bar { height: calc(var(--safe-top) + 20px); background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.04); display:flex; align-items:end; padding-bottom:6px; }
-    .safe-area { padding: 12px; padding-bottom: calc(12px + var(--safe-bottom)); max-width:420px; margin: 0 auto; }
-    .screen { min-height: calc(100vh - 120px); background: white; border-radius: 12px; overflow: hidden; }
-    .header { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom: 1px solid #f1f5f9; }
-    .title { font-weight:600; font-size:16px; }
-    .back-btn { background:transparent; border:none; font-size:18px; padding:6px 8px; }
-    .content { padding: 16px; }
-    .input-field { width:100%; padding:10px; border:1px solid #e6e9ee; border-radius:8px; }
-    .btn { padding:10px 14px; border-radius:10px; font-weight:600; }
-    .btn-primary { background:#2563eb; color:white; border:none; }
-    .btn-success { background:#16a34a; color:white; border:none; }
-    .btn-danger { background:#dc2626; color:white; border:none; }
-    .btn-secondary { background:#efefef; border:none; color:#111827; }
-    .upload-area { border:1px dashed #e6e9ee; padding:12px; border-radius:8px; text-align:center; cursor:pointer; }
-    .warning-card { margin-top:12px; padding:10px; background:#fff7ed; border-radius:8px; border:1px solid #feecd1; display:flex; gap:8px; align-items:flex-start; }
-    .success-card { margin-top:12px; padding:10px; background:#ecfdf5; border-radius:8px; border:1px solid #bbf7d0; display:flex; gap:8px; align-items:flex-start; }
-    .timeline-step { min-width:100px; }
-    .bottom-nav { position:fixed; left:0; right:0; bottom: calc(8px + var(--safe-bottom)); display:flex; justify-content:center; pointer-events:none; }
-    .bottom-nav-inner { pointer-events:auto; background:white; padding:8px; border-radius:9999px; display:flex; gap:22px; align-items:center; box-shadow:0 6px 20px rgba(2,6,23,0.08); }
-    /* small responsive */
-    @media (min-width:640px) {
-      .safe-area { padding:18px; }
-      .screen { border-radius:16px; }
-    }
+    section h2 { font-weight:600; font-size:18px; margin-bottom:12px; }
+    .input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:8px; }
+    .btn { padding:10px 14px; border-radius:8px; font-weight:600; margin-top:6px; }
+    .btn-primary { background:#2563eb; color:white; }
+    .btn-secondary { background:#e2e8f0; }
+    .btn-danger { background:#dc2626; color:white; }
+    .card { padding:12px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:8px; }
+    .nav { display:flex; justify-content:space-around; margin-top:12px; border-top:1px solid #e5e7eb; padding-top:8px; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
 
-  <script type="text/babel">
-  /*************************************************************************
-   * Cleaned + iPhone-optimized single-file prototype
-   * - Save as index.html and open in browser (or add to iPhone Home Screen).
-   * - All data and verification are simulated for prototyping.
-   *************************************************************************/
+  <!-- LOGIN PAGE -->
+  <section id="login">
+    <h2>Login</h2>
+    <input class="input" placeholder="Account ID / ID Number" />
+    <input class="input" type="password" maxlength="6" placeholder="6-digit PIN" />
+    <button class="btn btn-primary w-full">Login</button>
+    <div class="flex justify-between mt-3 text-sm">
+      <a href="#reset" class="text-blue-600">Forgot PIN?</a>
+      <a href="#register" class="text-blue-600">Register</a>
+    </div>
+  </section>
 
-  const { useState, useEffect } = React;
-  const REPORT_STATUSES = ['Received','Confirming','Processing','Completed'];
+  <!-- REGISTER PAGE -->
+  <section id="register">
+    <h2>Register</h2>
+    <div class="card">
+      <label class="text-sm">Upload ID Document</label>
+      <input type="file" class="input" />
+    </div>
+    <div class="card">
+      <label class="text-sm">Age</label>
+      <input type="number" class="input" placeholder="Enter Age" />
+      <p class="text-xs text-gray-500">0–12: parental assistance • 13–18 or >18: face verification required</p>
+      <button class="btn btn-secondary mt-2">Simulate Face Verification</button>
+    </div>
+    <div class="card">
+      <input class="input" placeholder="ID Number" />
+      <input class="input" type="email" placeholder="Email" />
+      <input class="input" placeholder="Phone" />
+      <input class="input" type="password" maxlength="6" placeholder="Set 6-digit PIN" />
+    </div>
+    <button class="btn btn-primary w-full">Complete Registration</button>
+  </section>
 
-  function App() {
-    const [page, setPage] = useState('login'); // start with login
-    const [user, setUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [reports, setReports] = useState([]);
-    const [linkedApps, setLinkedApps] = useState([]);
+  <!-- RESET PIN PAGE -->
+  <section id="reset">
+    <h2>Reset PIN</h2>
+    <select class="input">
+      <option>Email</option>
+      <option>Phone</option>
+    </select>
+    <input class="input" placeholder="Enter email or phone" />
+    <button class="btn btn-primary w-full">Send Code</button>
+    <input class="input" placeholder="Verification Code" />
+    <input class="input" type="password" maxlength="6" placeholder="New 6-digit PIN" />
+    <button class="btn btn-success w-full">Reset & Login</button>
+  </section>
 
-    useEffect(() => {
-      // small demo: no-op
-    }, []);
-
-    const navigate = (p) => setPage(p);
-    const login = (u) => { setUser(u); setIsLoggedIn(true); setPage('home'); };
-    const logout = () => { setUser(null); setIsLoggedIn(false); setPage('login'); };
-
-    // reports helpers
-    const addReport = (r) => {
-      setReports(prev => [{...r, id: `r-${Date.now()}`, statusIndex:0, history:[{status:'Received', at: new Date()}]}, ...prev]);
-    };
-    const advanceReport = (id) => {
-      setReports(prev => prev.map(r => {
-        if (r.id !== id) return r;
-        const next = Math.min((r.statusIndex||0)+1, REPORT_STATUSES.length-1);
-        return {...r, statusIndex: next, history: [...r.history, {status: REPORT_STATUSES[next], at: new Date()}]};
-      }));
-    };
-
-    const linkApp = (app) => {
-      setLinkedApps(prev => [...prev, app]);
-      setUser(u => u ? ({...u, linkedApps: [...(u.linkedApps||[]), app]}) : u);
-    };
-
-    return (
+  <!-- HOME PAGE -->
+  <section id="home">
+    <h2>Home</h2>
+    <div class="card">
+      <p><strong>Age Verification Status:</strong> ✅ Adult / 🔒 Minor</p>
+    </div>
+    <div class="card flex justify-between items-center">
       <div>
-        <div className="status-bar" />
-        <div className="safe-area">
-          <div className="screen shadow-sm">
-            {page === 'login' && <Login onNavigate={navigate} onLogin={login} />}
-            {page === 'register' && <Register onComplete={login} />}
-            {page === 'reset' && <ResetPIN onNavigate={navigate} />}
-            {page === 'home' && <Home user={user} onNavigate={navigate} onQuickAuth={(a)=>linkApp(a)} />}
-            {page === 'scan' && <Scan onNavigate={navigate} />}
-            {page === 'authorize' && <Authorize user={user} onAuthorize={linkApp} />}
-            {page === 'report' && <Report onSubmit={addReport} reports={reports} onAdvance={advanceReport} />}
-            {page === 'update' && <UpdateInfo user={user} onUpdate={(u)=>setUser(u)} />}
-            {page === 'profile' && <Profile user={user} linkedApps={linkedApps} onNavigate={navigate} onLogout={logout} />}
-          </div>
-
-          {/* bottom nav when logged in */}
-          {isLoggedIn && (
-            <div className="bottom-nav" aria-hidden>
-              <div className="bottom-nav-inner">
-                <button onClick={()=>navigate('home')} className="text-sm font-medium">Home</button>
-                <button onClick={()=>navigate('scan')} className="text-sm">Scan</button>
-                <button onClick={()=>navigate('profile')} className="text-sm">Me</button>
-              </div>
-            </div>
-          )}
-        </div>
+        <p class="font-medium">Third-party Authorization</p>
+        <p class="text-xs text-gray-500">Scan QR or Link Account</p>
       </div>
-    );
-  }
-
-  /***********************
-   * Login
-   ***********************/
-  function Login({ onNavigate, onLogin }) {
-    const [idNumber, setIdNumber] = useState('');
-    const [pin, setPin] = useState('');
-    const [err, setErr] = useState('');
-
-    const submit = () => {
-      if (pin.length !== 6) { setErr('PIN must be 6 digits'); return; }
-      const mock = { id: 'u-001', age: 20, email: 'user@example.com', phone: '+601234', isVerified:true, isAdult:true };
-      onLogin(mock);
-    };
-
-    return (
+      <a href="#authorize" class="btn btn-primary">Authorize</a>
+    </div>
+    <div class="card flex justify-between items-center">
       <div>
-        <div className="header">
-          <h2 className="title">Login</h2>
-        </div>
-        <div className="content">
-          <div className="space-y-3">
-            <label className="text-sm">Account ID / ID Number</label>
-            <input className="input-field" value={idNumber} onChange={(e)=>setIdNumber(e.target.value)} placeholder="Enter your ID" />
-            <label className="text-sm">6-digit PIN</label>
-            <input type="password" maxLength="6" className="input-field" value={pin} onChange={(e)=>setPin(e.target.value.replace(/[^\d]/g,''))} placeholder="6 digits" />
-            <div className="flex items-center justify-between mt-2">
-              <button className="text-sm text-blue-600" onClick={()=>onNavigate('reset')}>Forgot PIN?</button>
-              <div className="flex gap-2">
-                <button className="btn btn-secondary" onClick={()=>onNavigate('register')}>Register</button>
-                <button className="btn btn-primary" onClick={submit}>Login</button>
-              </div>
-            </div>
-            {err && <div className="text-sm text-red-600">{err}</div>}
-            <div className="text-xs text-gray-400 mt-2">Prototype: any ID + 6-digit PIN logs in (mock)</div>
-          </div>
-        </div>
+        <p class="font-medium">Report Harmful Content</p>
+        <p class="text-xs text-gray-500">Submit and Track Reports</p>
       </div>
-    );
-  }
+      <a href="#report" class="btn btn-danger">Report</a>
+    </div>
+    <div class="nav">
+      <a href="#home">Home</a>
+      <a href="#scan">Scan</a>
+      <a href="#profile">Me</a>
+    </div>
+  </section>
 
-  /***********************
-   * Register (multi-step)
-   ***********************/
-  function Register({ onComplete }) {
-    const [step, setStep] = useState(1);
-    const [idFile, setIdFile] = useState(null);
-    const [age, setAge] = useState('');
-    const [faceVerified, setFaceVerified] = useState(false);
-    const [idNumber, setIdNumber] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [pin, setPin] = useState('');
-    const [parentConsent, setParentConsent] = useState(false);
-    const [error, setError] = useState('');
+  <!-- SCAN PAGE -->
+  <section id="scan">
+    <h2>Scan QR</h2>
+    <input class="input" placeholder="Paste QR code data" />
+    <a href="#authorize" class="btn btn-primary w-full mt-2">Open Authorization</a>
+  </section>
 
-    useEffect(()=> { setError(''); }, [step]);
+  <!-- AUTHORIZE PAGE -->
+  <section id="authorize">
+    <h2>Authorize Social Media</h2>
+    <div class="card">
+      <p class="font-medium">Platform: DemoSocial</p>
+      <label class="flex items-center gap-2 mt-2 text-sm">
+        <input type="checkbox" /> Restrict content (for minors)
+      </label>
+      <button class="btn btn-primary mt-2">Authorize</button>
+    </div>
+  </section>
 
-    const needsFace = (() => {
-      const a = parseInt(age);
-      if (isNaN(a)) return false;
-      return a >= 13;
-    })();
+  <!-- REPORT PAGE -->
+  <section id="report">
+    <h2>Report Harmful Content</h2>
+    <input class="input" placeholder="Platform Name" />
+    <input class="input" placeholder="User ID on Platform" />
+    <select class="input">
+      <option>Email</option>
+      <option>Phone</option>
+    </select>
+    <input class="input" placeholder="Contact Detail" />
+    <select class="input">
+      <option>Harassment</option>
+      <option>Self-harm</option>
+      <option>Hate Speech</option>
+      <option>Sexual Content</option>
+      <option>Other</option>
+    </select>
+    <input type="file" class="input" />
+    <textarea class="input" placeholder="Remarks"></textarea>
+    <button class="btn btn-danger w-full">Submit Report</button>
 
-    const validateStep2 = () => {
-      const a = parseInt(age);
-      if (isNaN(a)) { setError('Please enter a valid age'); return false; }
-      if (a <= 12 && !parentConsent) { setError('Parental consent is required for users <=12'); return false; }
-      if (a >= 13 && !faceVerified) { setError('Face verification required for this age'); return false; }
-      setError(''); return true;
-    };
-
-    const complete = () => {
-      if (pin.length !== 6) { setError('PIN must be 6 digits'); return; }
-      if (!idNumber || !email || !phone) { setError('Fill ID, email and phone'); return; }
-      const user = { id: 'u-'+Date.now(), age: parseInt(age), idNumber, email, phone, isVerified: true, isAdult: parseInt(age) >= 18, linkedApps: [] };
-      onComplete(user);
-    };
-
-    return (
-      <div>
-        <div className="header">
-          <button className="back-btn" onClick={()=>{ /* no back from first step */ }}> </button>
-          <h2 className="title">Register</h2>
-        </div>
-        <div className="content">
-          <div className="space-y-4">
-            <div className="flex gap-2 text-xs text-gray-500">
-              <div className={`px-2 py-1 rounded ${step===1?'bg-blue-50 font-medium':'bg-gray-100'}`}>1 Upload</div>
-              <div className={`px-2 py-1 rounded ${step===2?'bg-blue-50 font-medium':'bg-gray-100'}`}>2 Verify</div>
-              <div className={`px-2 py-1 rounded ${step===3?'bg-blue-50 font-medium':'bg-gray-100'}`}>3 Info & PIN</div>
-            </div>
-
-            {step===1 && (
-              <div>
-                <label className="text-sm">Upload ID Document</label>
-                <label className="upload-area" htmlFor="id-upload">
-                  <input id="id-upload" type="file" className="hidden" onChange={(e)=>setIdFile(e.target.files[0])} />
-                  <div style={{fontSize:28}}>📄</div>
-                  <div className="text-sm text-gray-500">Tap to pick an ID image or PDF (simulated)</div>
-                </label>
-                <div className="flex gap-2 mt-3">
-                  <button className="btn btn-secondary" onClick={()=>setStep(2)}>Skip (prototype)</button>
-                  <button className="btn btn-primary" onClick={()=>setStep(2)} disabled={!idFile && false}>Next: Age</button>
-                </div>
-              </div>
-            )}
-
-            {step===2 && (
-              <div>
-                <label className="text-sm">Enter Age</label>
-                <input type="number" className="input-field w-28" value={age} onChange={(e)=>setAge(e.target.value)} placeholder="e.g., 14" />
-                <div className="mt-3 text-sm">
-                  {age !== '' && (parseInt(age) <= 12 ? '⚠️ 0–12: parental assistance required' : '🔒 13–18 & >18 require face verification')}
-                </div>
-
-                {age !== '' && parseInt(age) <= 12 && (
-                  <label className="mt-3 inline-flex items-center gap-2">
-                    <input type="checkbox" checked={parentConsent} onChange={(e)=>setParentConsent(e.target.checked)} />
-                    <span className="text-sm">Parent/guardian assisted</span>
-                  </label>
-                )}
-
-                {age !== '' && parseInt(age) >= 13 && (
-                  <div className="mt-3 p-3 border rounded flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium">Face Verification</div>
-                      <div className="text-xs text-gray-500">Simulated biometric check</div>
-                    </div>
-                    <div>
-                      {!faceVerified ? (
-                        <button className="btn btn-primary" onClick={()=>setFaceVerified(true)}>Simulate succeed</button>
-                      ) : (
-                        <button className="btn btn-secondary" onClick={()=>setFaceVerified(false)}>Reset</button>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex gap-2 mt-4">
-                  <button className="btn btn-secondary" onClick={()=>setStep(1)}>Back</button>
-                  <button className="btn btn-primary" onClick={() => { if (validateStep2()) setStep(3); else setStep(2); }}>Next: Info</button>
-                </div>
-              </div>
-            )}
-
-            {step===3 && (
-              <div>
-                <label className="text-sm">ID Number</label>
-                <input className="input-field" value={idNumber} onChange={(e)=>setIdNumber(e.target.value)} placeholder="National ID / Passport" />
-                <label className="text-sm mt-2">Email</label>
-                <input className="input-field" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} />
-                <label className="text-sm mt-2">Phone</label>
-                <input className="input-field" value={phone} onChange={(e)=>setPhone(e.target.value)} />
-                <label className="text-sm mt-2">6-digit PIN</label>
-                <input className="input-field w-40" type="password" maxLength="6" value={pin} onChange={(e)=>setPin(e.target.value.replace(/[^\d]/g,''))} />
-
-                <div className="flex gap-2 mt-4">
-                  <button className="btn btn-secondary" onClick={()=>setStep(2)}>Back</button>
-                  <button className="btn btn-success" onClick={complete}>Complete Registration</button>
-                </div>
-              </div>
-            )}
-
-            {error && <div className="text-sm text-red-600 mt-2">{error}</div>}
-          </div>
-
-          <div className="text-xs text-gray-400 mt-4">Note: ID upload and face verification are simulated. Replace with secure server + biometric vendor in production.</div>
-        </div>
+    <div class="mt-4">
+      <h3 class="font-medium">Report History</h3>
+      <div class="card">
+        <p class="text-sm">Report #1 – Status: Received → Confirming → Processing → Completed</p>
       </div>
-    );
-  }
+    </div>
+  </section>
 
-  /***********************
-   * Reset PIN
-   ***********************/
-  function ResetPIN({ onNavigate }) {
-    const [step, setStep] = useState(1);
-    const [method, setMethod] = useState('email');
-    const [contact, setContact] = useState('');
-    const [code, setCode] = useState('');
-    const [newPin, setNewPin] = useState('');
+  <!-- UPDATE INFO PAGE -->
+  <section id="update">
+    <h2>Update Personal Info</h2>
+    <input type="file" class="input" />
+    <button class="btn btn-secondary w-full">Simulate Face Verification</button>
+    <input class="input" type="email" placeholder="Update Email" />
+    <input class="input" placeholder="Update Phone" />
+    <button class="btn btn-success w-full">Save Updates</button>
+  </section>
 
-    return (
-      <div>
-        <div className="header">
-          <button className="back-btn" onClick={()=>onNavigate('login')}>←</button>
-          <h2 className="title">Reset PIN</h2>
-        </div>
-        <div className="content">
-          {step===1 && (
-            <>
-              <div className="text-sm mb-2">Choose verification method</div>
-              <div className="flex gap-2">
-                <button className={`btn ${method==='email'?'btn-primary':'btn-secondary'}`} onClick={()=>setMethod('email')}>Email</button>
-                <button className={`btn ${method==='phone'?'btn-primary':'btn-secondary'}`} onClick={()=>setMethod('phone')}>SMS</button>
-              </div>
-              <input className="input-field mt-3" placeholder={method==='email' ? 'Your email' : 'Your phone number'} value={contact} onChange={(e)=>setContact(e.target.value)} />
-              <div className="flex gap-2 mt-3">
-                <button className="btn btn-secondary" onClick={()=>onNavigate('login')}>Back</button>
-                <button className="btn btn-primary" onClick={()=>setStep(2)}>Send code</button>
-              </div>
-            </>
-          )}
-          {step===2 && (
-            <>
-              <div className="text-sm mb-2">Enter code sent to {method}</div>
-              <input className="input-field" value={code} onChange={(e)=>setCode(e.target.value)} placeholder="6-digit code" />
-              <input className="input-field mt-2" type="password" maxLength="6" value={newPin} onChange={(e)=>setNewPin(e.target.value.replace(/[^\d]/g,''))} placeholder="New 6-digit PIN" />
-              <div className="flex gap-2 mt-3">
-                <button className="btn btn-secondary" onClick={()=>setStep(1)}>Back</button>
-                <button className="btn btn-success" onClick={()=>onNavigate('login')}>Reset & Login</button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
+  <!-- PROFILE PAGE -->
+  <section id="profile">
+    <h2>Profile / Me</h2>
+    <p><strong>Age Status:</strong> ✅ Adult / 🔒 Minor</p>
+    <div class="card">
+      <p><strong>Linked Apps:</strong></p>
+      <ul class="list-disc ml-4 text-sm">
+        <li>DemoSocial (Restricted)</li>
+      </ul>
+    </div>
+    <a href="#update" class="btn btn-secondary w-full">Update Info</a>
+    <a href="#reset" class="btn btn-secondary w-full">Reset PIN</a>
+    <button class="btn btn-danger w-full">Logout</button>
+  </section>
 
-  /***********************
-   * Home
-   ***********************/
-  function Home({ user, onNavigate, onQuickAuth }) {
-    return (
-      <div>
-        <div className="header">
-          <div style={{display:'flex', alignItems:'center', gap:12}}>
-            <div style={{width:40,height:40,background:'#2563eb',color:'white',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700}}>AV</div>
-            <div>
-              <div style={{fontWeight:700}}>AgeVerify</div>
-              <div style={{fontSize:12,color:'#6b7280'}}>Protecting minors on social platforms</div>
-            </div>
-          </div>
-          <div style={{display:'flex', gap:8}}>
-            <button className="btn btn-secondary" onClick={()=>onNavigate('report')}>Report</button>
-            <button className="btn btn-secondary" onClick={()=>onNavigate('profile')}>Me</button>
-          </div>
-        </div>
-
-        <div className="content">
-          <div style={{background:'linear-gradient(90deg,#eff6ff,#eef2ff)', padding:12, borderRadius:10, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-            <div>
-              <div style={{fontWeight:700}}>Age Verification Status</div>
-              <div style={{fontSize:13, color:'#374151'}}>{user ? (user.isAdult ? '✅ Verified Adult (18+)' : '🔒 Minor (Under 18)') : 'Not verified'}</div>
-            </div>
-            <div style={{fontSize:22}}>{user ? (user.isAdult ? '🔓' : '🔒') : '❓'}</div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-3">
-            <div style={{background:'white',padding:12,borderRadius:10,border:'1px solid #f1f5f9', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-              <div>
-                <div style={{fontWeight:600}}>Third-party Authorization</div>
-                <div style={{fontSize:12,color:'#6b7280'}}>Link social accounts via QR or link</div>
-              </div>
-              <div style={{display:'flex', gap:8}}>
-                <button className="btn btn-primary" onClick={()=>onNavigate('authorize')}>Authorize</button>
-                <button className="btn btn-secondary" onClick={()=>onQuickAuth({id:'demo-1', name:'DemoSocial', restricted: !(user?.isAdult)})}>Quick</button>
-              </div>
-            </div>
-
-            <div style={{background:'white',padding:12,borderRadius:10,border:'1px solid #f1f5f9'}}>
-              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                <div>
-                  <div style={{fontWeight:600}}>Report Harmful Content</div>
-                  <div style={{fontSize:12,color:'#6b7280'}}>Submit and track moderation cases</div>
-                </div>
-                <button className="btn btn-danger" onClick={()=>onNavigate('report')}>Report</button>
-              </div>
-            </div>
-
-            <div style={{background:'white',padding:12,borderRadius:10,border:'1px solid #f1f5f9'}}>
-              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                <div>
-                  <div style={{fontWeight:600}}>Testing Flows</div>
-                  <div style={{fontSize:12,color:'#6b7280'}}>Use register/login/reset to simulate user journeys</div>
-                </div>
-                <div style={{display:'flex', gap:8}}>
-                  <button className="btn btn-secondary" onClick={()=>onNavigate('scan')}>Scan</button>
-                  <button className="btn btn-secondary" onClick={()=>onNavigate('profile')}>Profile</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /***********************
-   * Scan
-   ***********************/
-  function Scan({ onNavigate }) {
-    const [text, setText] = useState('');
-    return (
-      <div>
-        <div className="header">
-          <button className="back-btn" onClick={()=>onNavigate('home')}>←</button>
-          <h2 className="title">Scan QR</h2>
-        </div>
-        <div className="content">
-          <input className="input-field" placeholder="Paste QR payload or URL" value={text} onChange={(e)=>setText(e.target.value)} />
-          <div className="flex gap-2 mt-3">
-            <button className="btn btn-primary" onClick={()=>onNavigate('authorize')}>Open Authorization</button>
-            <button className="btn btn-secondary" onClick={()=>setText('https://demo.social/link?id=demo')}>Load example</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /***********************
-   * Authorize
-   ***********************/
-  function Authorize({ user, onAuthorize }) {
-    const platforms = [{id:'p-1',name:'FriendFeed'},{id:'p-2',name:'ShortVideo'},{id:'p-3',name:'PhotoShare'}];
-    const [selected, setSelected] = useState(null);
-    const [restricted, setRestricted] = useState(user ? !user.isAdult : true);
-
-    useEffect(()=> { setRestricted(user ? !user.isAdult : true); }, [user]);
-
-    const link = () => {
-      if (!selected) return alert('Select a platform');
-      onAuthorize({id:selected.id,name:selected.name,restricted});
-      alert(`Authorized ${selected.name} (restricted: ${restricted}) — prototype`);
-    };
-
-    return (
-      <div>
-        <div className="header">
-          <button className="back-btn" onClick={()=>{ /* go back */ window.history.back(); }}>←</button>
-          <h2 className="title">Authorize App</h2>
-        </div>
-        <div className="content">
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
-            {platforms.map(p=>(
-              <div key={p.id} style={{padding:10,border:'1px solid #f1f5f9', borderRadius:8}}>
-                <div style={{fontWeight:600}}>{p.name}</div>
-                <div style={{fontSize:12,color:'#6b7280'}}>Demo platform</div>
-                <div className="mt-2">
-                  <button className="btn btn-secondary" onClick={()=>setSelected(p)}>Select</button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-3 p-3">
-            <label className="inline-flex items-center gap-2"><input type="checkbox" checked={restricted} onChange={(e)=>setRestricted(e.target.checked)} /> <span className="text-sm">Simulate restricted content (minor)</span></label>
-            <div className="mt-3" style={{background:'#f8fafc',padding:10,borderRadius:8}}>
-              {restricted ? <div style={{color:'#475569'}}>Restricted preview — blurred/filtered content (simulated)</div> : <div>Full content preview (simulated)</div>}
-            </div>
-
-            <div className="flex gap-2 mt-3">
-              <button className="btn btn-primary" onClick={link}>Authorize</button>
-              <button className="btn btn-secondary" onClick={()=>navigator.clipboard?.writeText(selected?.id||'')}>Copy ID</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /***********************
-   * Report
-   ***********************/
-  function Report({ onSubmit, reports, onAdvance }) {
-    const [form, setForm] = useState({platform:'', platformId:'', contactMethod:'email', contact:'', type:'Harassment', attachments:[], remarks:''});
-    const [viewing, setViewing] = useState(null);
-
-    const handleFile = (e) => { const f = e.target.files[0]; if (f) setForm(prev => ({...prev, attachments: [...prev.attachments, f.name]})); };
-
-    const submit = () => {
-      if (!form.platform || !form.platformId) return alert('Fill platform & platform ID');
-      onSubmit({...form, submittedAt: new Date(), reporter:'prototype'});
-      setForm({platform:'',platformId:'',contactMethod:'email',contact:'',type:'Harassment',attachments:[],remarks:''});
-      alert('Report submitted (prototype).');
-    };
-
-    return (
-      <div>
-        <div className="header">
-          <button className="back-btn" onClick={()=>{ /* back to home */ }}>←</button>
-          <h2 className="title">Report Harmful Content</h2>
-        </div>
-        <div className="content">
-          <div>
-            <label className="text-sm">Platform</label>
-            <input className="input-field" value={form.platform} onChange={(e)=>setForm({...form,platform:e.target.value})} placeholder="e.g., TikTok" />
-            <label className="text-sm mt-2">User ID on Platform</label>
-            <input className="input-field" value={form.platformId} onChange={(e)=>setForm({...form,platformId:e.target.value})} placeholder="@badactor" />
-            <label className="text-sm mt-2">Contact Method</label>
-            <select className="input-field" value={form.contactMethod} onChange={(e)=>setForm({...form,contactMethod:e.target.value})}>
-              <option value="email">Email</option><option value="phone">Phone</option>
-            </select>
-            <input className="input-field mt-2" placeholder="Contact details" value={form.contact} onChange={(e)=>setForm({...form,contact:e.target.value})} />
-
-            <label className="text-sm mt-2">Type</label>
-            <select className="input-field" value={form.type} onChange={(e)=>setForm({...form,type:e.target.value})}>
-              <option>Harassment</option><option>Self-harm</option><option>Hate speech</option><option>Sexual content</option><option>Other</option>
-            </select>
-
-            <label className="text-sm mt-2">Attachments</label>
-            <div className="upload-area">
-              <input id="attach-file" type="file" className="hidden" onChange={handleFile} />
-              <label htmlFor="attach-file" style={{cursor:'pointer'}}>📎 Click to choose file (prototype)</label>
-              <div className="text-xs text-gray-400 mt-2">{form.attachments.length ? form.attachments.join(', ') : 'No files selected'}</div>
-            </div>
-
-            <label className="text-sm mt-2">Remarks</label>
-            <textarea className="input-field" rows="3" value={form.remarks} onChange={(e)=>setForm({...form,remarks:e.target.value})} />
-
-            <div className="flex gap-2 mt-3">
-              <button className="btn btn-secondary" onClick={()=>{}}>Cancel</button>
-              <button className="btn btn-danger" onClick={submit}>Submit Report</button>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <div style={{fontWeight:600}}>Report History</div>
-            {reports.length === 0 ? <div className="text-sm text-gray-500 mt-2">No reports yet.</div> :
-              reports.map(r => (
-                <div key={r.id} style={{marginTop:8, padding:10, borderRadius:8, background:'white', border:'1px solid #f1f5f9'}}>
-                  <div style={{display:'flex', justifyContent:'space-between'}}>
-                    <div><div style={{fontWeight:600}}>{r.platform} • {r.platformId}</div><div style={{fontSize:12,color:'#6b7280'}}>Type: {r.type}</div></div>
-                    <div style={{fontWeight:700}}>{REPORT_STATUSES[r.statusIndex||0]}</div>
-                  </div>
-                  <div style={{display:'flex', gap:8, marginTop:8}}>
-                    <button className="btn btn-secondary" onClick={()=>setViewing(r)}>View</button>
-                    <button className="btn btn-primary" onClick={()=>onAdvance(r.id)}>Advance (prototype)</button>
-                  </div>
-                </div>
-              ))
-            }
-          </div>
-        </div>
-
-        {/* viewer */}
-        {viewing && (
-          <div style={{position:'fixed', inset:0, background:'rgba(0,0,0,0.3)', display:'flex', alignItems:'center', justifyContent:'center', padding:20}}>
-            <div style={{background:'white', padding:16, borderRadius:10, width:'100%', maxWidth:420}}>
-              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                <div style={{fontWeight:700}}>Report details</div>
-                <button onClick={()=>setViewing(null)}>Close</button>
-              </div>
-              <div style={{marginTop:8, fontSize:13}}>
-                <div><strong>Platform:</strong> {viewing.platform}</div>
-                <div><strong>ID:</strong> {viewing.platformId}</div>
-                <div><strong>Type:</strong> {viewing.type}</div>
-                <div><strong>Remarks:</strong> {viewing.remarks || '—'}</div>
-                <div style={{marginTop:6}}><strong>History:</strong>
-                  <ul style={{marginLeft:14, marginTop:4}}>
-                    {viewing.history.map((h,i)=>(<li key={i}>{h.status} — {new Date(h.at).toLocaleString()}</li>))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  /***********************
-   * UpdateInfo
-   ***********************/
-  function UpdateInfo({ user, onUpdate }) {
-    const [idFile,setIdFile] = useState(null);
-    const [email, setEmail] = useState(user?.email || '');
-    const [phone, setPhone] = useState(user?.phone || '');
-    const [message, setMessage] = useState('');
-
-    const handleSave = () => {
-      if (!user) return;
-      const updated = {...user, email, phone, age: (user.age||0)+1, isAdult: ((user.age||0)+1) >= 18};
-      onUpdate(updated);
-      setMessage('Saved (prototype)');
-    };
-
-    return (
-      <div>
-        <div className="header">
-          <button className="back-btn" onClick={()=>{ /* go back */ }}>←</button>
-          <h2 className="title">Update Personal Info</h2>
-        </div>
-        <div className="content">
-          <label className="text-sm">Upload new ID</label>
-          <input type="file" onChange={(e)=>setIdFile(e.target.files[0])} className="mt-1" />
-          <div className="mt-3">
-            <div style={{fontWeight:600}}>Face verification</div>
-            <div style={{fontSize:12,color:'#6b7280'}}>Will be required when age thresholds change (simulated)</div>
-          </div>
-          <label className="text-sm mt-3">Email</label>
-          <input className="input-field" value={email} onChange={(e)=>setEmail(e.target.value)} />
-          <label className="text-sm mt-2">Phone</label>
-          <input className="input-field" value={phone} onChange={(e)=>setPhone(e.target.value)} />
-          <div className="flex gap-2 mt-3">
-            <button className="btn btn-secondary">Cancel</button>
-            <button className="btn btn-success" onClick={handleSave}>Save</button>
-          </div>
-          {message && <div className="text-sm text-green-600 mt-2">{message}</div>}
-        </div>
-      </div>
-    );
-  }
-
-  /***********************
-   * Profile / Me
-   ***********************/
-  function Profile({ user, linkedApps, onNavigate, onLogout }) {
-    return (
-      <div>
-        <div className="header">
-          <h2 className="title">Profile</h2>
-          <div />
-        </div>
-        <div className="content">
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <div>
-              <div style={{fontWeight:700}}>{user?.email || 'Guest'}</div>
-              <div style={{fontSize:12,color:'#6b7280'}}>ID: {user?.idNumber || '—'}</div>
-            </div>
-            <div style={{fontSize:20}}>{user ? (user.isAdult ? '🔓' : '🔒') : '❓'}</div>
-          </div>
-
-          <div className="mt-4">
-            <div style={{fontWeight:600}}>Linked apps</div>
-            <div className="mt-2 text-sm">{(linkedApps && linkedApps.length) ? linkedApps.map(a=>(<div key={a.id}>{a.name} {a.restricted? '(restricted)':''}</div>)) : 'No linked apps'}</div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <button className="btn btn-secondary" onClick={()=>onNavigate('update')}>Update Info</button>
-            <button className="btn btn-secondary" onClick={()=>onNavigate('reset')}>Reset PIN</button>
-            <button className="btn btn-secondary" onClick={()=>alert('Change contact (prototype)')}>Change Email/Phone</button>
-            <button className="btn btn-danger" onClick={onLogout}>Logout</button>
-          </div>
-
-        </div>
-      </div>
-    );
-  }
-
-  // Render
-  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-  </script>
 </body>
 </html>
